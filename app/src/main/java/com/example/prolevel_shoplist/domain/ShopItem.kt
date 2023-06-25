@@ -4,8 +4,8 @@ data class ShopItem(
 
     val name: String,
     val count: Int,
-    val isEnabled: Boolean,
-    var id: Int = UNDEFINED_ID
+    var isEnabled: Boolean,
+    var shopItemId: Int = UNDEFINED_ID
 
 ) {
 
