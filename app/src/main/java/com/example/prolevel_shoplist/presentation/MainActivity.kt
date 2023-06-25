@@ -17,6 +17,5 @@ class MainActivity : AppCompatActivity() {
         viewModel.liveDataShopList.observe(this){list ->
             Log.d("MainActivityList", "MainActivityList ${list.toString()}")
         }
-        viewModel.getShopList()
     }
 }
