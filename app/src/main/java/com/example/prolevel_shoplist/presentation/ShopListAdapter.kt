@@ -7,8 +7,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prolevel_shoplist.R
 import com.example.prolevel_shoplist.domain.ShopItem
+import java.lang.RuntimeException
 
 class ShopListAdapter() : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolder>() {
+
+    companion object{
+        const val VIEW_TYPE_ENABLED = 1
+        const val VIEW_TYPE_DISABLED = 2
+
+        const val  MAX_POOL_SIZE_VIEWHOLDER = 15
+    }
 
     var shopList = listOf<ShopItem>()
         set(value) {
@@ -23,8 +31,13 @@ class ShopListAdapter() : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolde
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopListViewHolder {
+        val itemLayout = when (viewType) {
+            VIEW_TYPE_ENABLED -> R.layout.item_shop_enabled
+            VIEW_TYPE_DISABLED -> R.layout.item_shop_disabled
+            else -> throw RuntimeException("Unknown view type $viewType")
+        }
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.item_shop_enabled,
+            itemLayout,
             parent,
             false
         )
@@ -41,6 +54,14 @@ class ShopListAdapter() : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolde
         holder.tvCount.text = shopItem.count.toString()
         holder.itemView.setOnLongClickListener {
             true
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (shopList[position].isEnabled) {
+            VIEW_TYPE_ENABLED
+        } else {
+            VIEW_TYPE_DISABLED
         }
     }
 
