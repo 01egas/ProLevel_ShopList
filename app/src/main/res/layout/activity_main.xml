@@ -20,6 +20,7 @@
         app:srcCompat="@drawable/baseline_add_circle_24" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvShopList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
