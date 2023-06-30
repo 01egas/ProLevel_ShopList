@@ -18,6 +18,12 @@ class ShopListAdapter() : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolde
         const val  MAX_POOL_SIZE_VIEWHOLDER = 15
     }
 
+    var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
+
+    interface OnShopItemLongClickListener{
+        fun onShopItemLongClick(shopItem: ShopItem)
+    }
+
     var shopList = listOf<ShopItem>()
         set(value) {
             field = value
@@ -31,17 +37,20 @@ class ShopListAdapter() : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolde
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopListViewHolder {
+
         val itemLayout = when (viewType) {
             VIEW_TYPE_ENABLED -> R.layout.item_shop_enabled
             VIEW_TYPE_DISABLED -> R.layout.item_shop_disabled
             else -> throw RuntimeException("Unknown view type $viewType")
         }
+
         val view = LayoutInflater.from(parent.context).inflate(
             itemLayout,
             parent,
             false
         )
         return ShopListViewHolder(view)
+
     }
 
     override fun getItemCount(): Int {
@@ -53,6 +62,7 @@ class ShopListAdapter() : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolde
         holder.tvName.text = shopItem.name
         holder.tvCount.text = shopItem.count.toString()
         holder.itemView.setOnLongClickListener {
+            onShopItemLongClickListener?.invoke(shopItem)
             true
         }
     }
