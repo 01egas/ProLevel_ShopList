@@ -19,6 +19,7 @@ class ShopListAdapter() : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolde
     }
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
+    var onShopItemClickListener: ((ShopItem) -> Unit)? = null
 
     interface OnShopItemLongClickListener{
         fun onShopItemLongClick(shopItem: ShopItem)
@@ -64,6 +65,9 @@ class ShopListAdapter() : RecyclerView.Adapter<ShopListAdapter.ShopListViewHolde
         holder.itemView.setOnLongClickListener {
             onShopItemLongClickListener?.invoke(shopItem)
             true
+        }
+        holder.itemView.setOnClickListener{
+            onShopItemClickListener?.invoke(shopItem)
         }
     }
 

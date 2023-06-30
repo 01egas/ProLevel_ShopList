@@ -43,6 +43,10 @@ class MainActivity : AppCompatActivity() {
             shopListAdapter.onShopItemLongClickListener = { shopItem ->
                 viewModel.changeEnablesState(shopItem)
             }
+
+            shopListAdapter.onShopItemClickListener = {shopItem ->
+                Log.d("MainActivityItemClick", "shopitem $shopItem")
+            }
         }
     }
 }
