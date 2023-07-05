@@ -16,7 +16,7 @@ class ShopListAdapter() :
         const val VIEW_TYPE_ENABLED = 1
         const val VIEW_TYPE_DISABLED = 2
 
-        const val MAX_POOL_SIZE_VIEWHOLDER = 15
+        const val MAX_POOL_SIZE_VIEW_HOLDER = 15
     }
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
