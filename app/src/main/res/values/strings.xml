@@ -4,4 +4,9 @@
     <string name="name">Name:</string>
     <string name="count">Count:</string>
     <string name="save">Save</string>
+    <string name="name_error">Name field should not be empty</string>
+    <string name="count_error">Count field must be greater than zero</string>
+    <string name="screen_mode_absent_exception">Param screen mode is absent</string>
+    <string name="unknown_screen_mode">"Unknown screen mode "</string>
+    <string name="shop_item_absent_exception">Param shop item id is absent</string>
 </resources>
