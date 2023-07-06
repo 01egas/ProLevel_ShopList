@@ -2,7 +2,6 @@ package com.example.prolevel_shoplist.presentation
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.prolevel_shoplist.data.ShopListRepositoryImpl
@@ -10,7 +9,6 @@ import com.example.prolevel_shoplist.domain.AddShopItemUseCase
 import com.example.prolevel_shoplist.domain.EditShopItemUseCase
 import com.example.prolevel_shoplist.domain.GetShopItemByIdUseCase
 import com.example.prolevel_shoplist.domain.ShopItem
-import java.lang.NumberFormatException
 
 class ShopItemViewModel : ViewModel() {
 
@@ -32,7 +30,7 @@ class ShopItemViewModel : ViewModel() {
     val shopItem: LiveData<ShopItem>
         get() = _shopItem
 
-    private val _shouldCloseScreen = MediatorLiveData<Unit>()
+    private val _shouldCloseScreen = MutableLiveData<Unit>()
     val shouldCloseScreen: LiveData<Unit>
         get() = _shouldCloseScreen
 
@@ -92,11 +90,11 @@ class ShopItemViewModel : ViewModel() {
         return result
     }
 
-    private fun resetInputErrorName(){
+     fun resetInputErrorName(){
         _errorInputName.value = false
     }
 
-    private fun resetInputErrorCount(){
+     fun resetInputErrorCount(){
         _errorInputCount.value = false
     }
 
