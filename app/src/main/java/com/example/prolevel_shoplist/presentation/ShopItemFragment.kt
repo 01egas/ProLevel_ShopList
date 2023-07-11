@@ -18,8 +18,7 @@ import com.example.prolevel_shoplist.domain.ShopItem
 import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemFragment(
-    private val screenMode: String = MODE_UNKNOWN,
-    private val shopItemId: Int = ShopItem.UNDEFINED_ID
+
 ) : Fragment() {
 
     private lateinit var viewModel: ShopItemViewModel
@@ -30,6 +29,15 @@ class ShopItemFragment(
     private lateinit var etCount: EditText
     private lateinit var btnSave: Button
 
+    private var screenMode: String = MODE_UNKNOWN
+    private var shopItemId: Int = ShopItem.UNDEFINED_ID
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parseParams()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,15 +47,12 @@ class ShopItemFragment(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         super.onViewCreated(view, savedInstanceState)
-        parseParams()
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         initViews(view)
         addTextChangeListeners()
         launchRightMode()
         observeViewModel()
-
     }
 
 
@@ -76,42 +81,47 @@ class ShopItemFragment(
     }
 
     companion object {
-        private const val EXTRA_SCREEN_MODE = "extra_mode"
+        private const val SCREEN_MODE = "extra_mode"
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
-        private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
+        private const val SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_UNKNOWN = ""
 
-        fun newIntentAddItem(context: Context): Intent {
-            val nIntent = Intent(context, ShopItemActivity::class.java)
-            nIntent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
-            return nIntent
+        fun newInstanceAddItem(): ShopItemFragment {
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_ADD)
+                }
+            }
         }
 
-        fun newIntentEditItem(context: Context, shopItemId: Int): Intent {
-            val nIntent = Intent(context, ShopItemActivity::class.java)
-            nIntent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
-            nIntent.putExtra(EXTRA_SHOP_ITEM_ID, shopItemId)
-            return nIntent
-        }
-
-        fun newInstanceAddItem(): ShopItemFragment{
-            return ShopItemFragment(MODE_ADD)
-        }
-
-        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment{
-            return ShopItemFragment(MODE_EDIT, shopItemId)
+        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment {
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_EDIT)
+                    putInt(SHOP_ITEM_ID, shopItemId)
+                }
+            }
         }
     }
 
     private fun parseParams() {
-        if (screenMode != MODE_EDIT && screenMode != MODE_ADD) {
+        val args = requireArguments()
+        if (!args.containsKey(SCREEN_MODE)) {
             throw RuntimeException(getString(R.string.screen_mode_absent_exception))
         }
-        if (screenMode == MODE_EDIT && shopItemId == ShopItem.UNDEFINED_ID) {
+        val mode = args.getString(SCREEN_MODE)
+        if (mode != MODE_ADD && mode != MODE_EDIT) {
+            throw RuntimeException(getString(R.string.unknown_screen_mode) + mode)
+        }
+        screenMode = mode
+        if (screenMode == MODE_EDIT) {
+            if (!args.containsKey(SHOP_ITEM_ID)) {
                 throw RuntimeException(getString(R.string.shop_item_absent_exception))
             }
+            shopItemId = args.getInt(SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
         }
+    }
 
 
     private fun initViews(view: View) {
@@ -153,7 +163,6 @@ class ShopItemFragment(
             override fun afterTextChanged(s: Editable?) {
 
             }
-
         })
     }
 
