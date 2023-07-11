@@ -17,8 +17,8 @@ class ShopItemActivity : AppCompatActivity() {
 
 //    private lateinit var viewModel: ShopItemViewModel
 //
-//    private var screenMode = MODE_UNKNOWN
-//    private var shopItemId = ShopItem.UNDEFINED_ID
+    private var screenMode = MODE_UNKNOWN
+    private var shopItemId = ShopItem.UNDEFINED_ID
 //
 //    private lateinit var tilName : TextInputLayout
 //    private lateinit var etName : EditText
@@ -29,21 +29,25 @@ class ShopItemActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
-//        parseIntent()
+        parseIntent()
 //        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
 //        initViews()
 //        addTextChangeListeners()
-//        launchRightMode()
+        launchRightMode()
 //        observeViewModel()
     }
 
-//    private fun launchRightMode() {
-//        when (screenMode) {
-//            MODE_ADD -> launchAddMode()
-//            MODE_EDIT -> launchEditMode()
-//        }
-//    }
-//
+    private fun launchRightMode() {
+        val fragment = when (screenMode) {
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+            else -> throw RuntimeException(getString(R.string.unknown_screen_mode) + screenMode)
+        }
+        supportFragmentManager.beginTransaction()
+            .add(R.id.shop_item_container, fragment)
+            .commit()
+    }
+
 //    private fun launchEditMode() {
 //        viewModel.getShopItem(shopItemId)
 //        viewModel.shopItem.observe(this){ shopItem ->
@@ -81,24 +85,24 @@ class ShopItemActivity : AppCompatActivity() {
             return nIntent
         }
     }
-//
-//    private fun parseIntent(){
-//        if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
-//            throw RuntimeException(getString(R.string.screen_mode_absent_exception))
-//        }
-//        val mode = intent.getStringExtra(EXTRA_SCREEN_MODE)
-//        if (mode != MODE_ADD && mode != MODE_EDIT) {
-//            throw RuntimeException(getString(R.string.unknown_screen_mode) + mode)
-//        }
-//        screenMode = mode
-//        if (screenMode == MODE_EDIT) {
-//            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
-//                throw RuntimeException(getString(R.string.shop_item_absent_exception))
-//            }
-//            shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
-//        }
-//    }
-//
+
+    private fun parseIntent(){
+        if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
+            throw RuntimeException(getString(R.string.screen_mode_absent_exception))
+        }
+        val mode = intent.getStringExtra(EXTRA_SCREEN_MODE)
+        if (mode != MODE_ADD && mode != MODE_EDIT) {
+            throw RuntimeException(getString(R.string.unknown_screen_mode) + mode)
+        }
+        screenMode = mode
+        if (screenMode == MODE_EDIT) {
+            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
+                throw RuntimeException(getString(R.string.shop_item_absent_exception))
+            }
+            shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
+        }
+    }
+
 //    private fun initViews(){
 //        tilName = findViewById(R.id.til_name)
 //        etName = findViewById(R.id.et_name)
