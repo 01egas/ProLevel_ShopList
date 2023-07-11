@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.prolevel_shoplist.R
@@ -93,6 +94,14 @@ class ShopItemFragment(
             nIntent.putExtra(EXTRA_SHOP_ITEM_ID, shopItemId)
             return nIntent
         }
+
+        fun newInstanceAddItem(): ShopItemFragment{
+            return ShopItemFragment(MODE_ADD)
+        }
+
+        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment{
+            return ShopItemFragment(MODE_EDIT, shopItemId)
+        }
     }
 
     private fun parseParams() {
@@ -166,7 +175,7 @@ class ShopItemFragment(
         }
 
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            finish()
+            OnBackPressedDispatcher().onBackPressed()
         }
     }
 
