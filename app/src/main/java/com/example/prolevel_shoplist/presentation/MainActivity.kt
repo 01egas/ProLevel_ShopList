@@ -1,9 +1,12 @@
 package com.example.prolevel_shoplist.presentation
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentContainer
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -15,23 +18,32 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var shopListAdapter: ShopListAdapter
+    private var shopItemContainer: FragmentContainerView? = null
+    private var orientationMode = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setupRecyclerView()
+        shopItemContainer = findViewById(R.id.shop_item_container_main)
 
+
+        setupRecyclerView()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.liveDataShopList.observe(this) { list ->
             shopListAdapter.submitList(list)
             Log.d("MainActivityList", "MainActivityList ${list.toString()}")
         }
 
-        val btnAdd = findViewById<FloatingActionButton>(R.id.floatingActionButtonAdd)
-        btnAdd.setOnClickListener {
-            val nIntent = ShopItemActivity.newIntentAddItem(this)
-            startActivity(nIntent)
+    }
+
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            orientationMode = Configuration.ORIENTATION_LANDSCAPE
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            orientationMode = Configuration.ORIENTATION_PORTRAIT
         }
     }
 
@@ -48,6 +60,8 @@ class MainActivity : AppCompatActivity() {
                 ShopListAdapter.VIEW_TYPE_DISABLED,
                 ShopListAdapter.MAX_POOL_SIZE_VIEW_HOLDER
             )
+
+            setupFloatingActionButton()
 
             setupLongClickListener()
 
@@ -84,10 +98,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListener() {
         shopListAdapter.onShopItemClickListener = { shopItem ->
-            val nIntent = ShopItemActivity.newIntentEditItem(this, shopItem.shopItemId)
-            startActivity(nIntent)
-
-            Log.d("MainActivityItemClick", "shopitem $shopItem")
+            if (isOnePaneMode()) {
+                val nIntent = ShopItemActivity.newIntentEditItem(this, shopItem.shopItemId)
+                startActivity(nIntent)
+            } else {
+                launchFragment(ShopItemFragment.newInstanceEditItem(shopItem.shopItemId))
+            }
         }
     }
 
@@ -96,6 +112,32 @@ class MainActivity : AppCompatActivity() {
             viewModel.changeEnablesState(shopItem)
         }
     }
+
+    private fun setupFloatingActionButton() {
+        val btnAdd = findViewById<FloatingActionButton>(R.id.floatingActionButtonAdd)
+        btnAdd.setOnClickListener {
+            if (isOnePaneMode()) {
+                val nIntent = ShopItemActivity.newIntentAddItem(this)
+                startActivity(nIntent)
+            } else {
+                launchFragment(ShopItemFragment.newInstanceAddItem())
+            }
+        }
+    }
+
+
+    private fun isOnePaneMode(): Boolean {
+        return shopItemContainer == null
+    }
+
+    private fun launchFragment(shopItemFragment: ShopItemFragment) {
+        supportFragmentManager.popBackStack()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.shop_item_container_main, shopItemFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
 
 }
 

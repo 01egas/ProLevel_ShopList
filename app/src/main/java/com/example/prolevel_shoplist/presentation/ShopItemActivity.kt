@@ -15,26 +15,16 @@ import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemActivity : AppCompatActivity() {
 
-//    private lateinit var viewModel: ShopItemViewModel
-//
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINED_ID
-//
-//    private lateinit var tilName : TextInputLayout
-//    private lateinit var etName : EditText
-//    private lateinit var tilCount : TextInputLayout
-//    private lateinit var etCount : EditText
-//    private lateinit var btnSave : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
         parseIntent()
-//        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-//        initViews()
-//        addTextChangeListeners()
-        launchRightMode()
-//        observeViewModel()
+        if (savedInstanceState == null) {
+            launchRightMode()
+        }
     }
 
     private fun launchRightMode() {
@@ -44,27 +34,10 @@ class ShopItemActivity : AppCompatActivity() {
             else -> throw RuntimeException(getString(R.string.unknown_screen_mode) + screenMode)
         }
         supportFragmentManager.beginTransaction()
-            .add(R.id.shop_item_container, fragment)
+            .replace(R.id.shop_item_container, fragment) //важно заменять а не добавлять, чтобы лишний раз не вызывать метод oncreate
             .commit()
     }
 
-//    private fun launchEditMode() {
-//        viewModel.getShopItem(shopItemId)
-//        viewModel.shopItem.observe(this){ shopItem ->
-//            etName.setText(shopItem.name)
-//            etCount.setText(shopItem.count.toString())
-//        }
-//        btnSave.setOnClickListener{
-//            viewModel.editShopItem(etName.text.toString(), etCount.text.toString())
-//        }
-//    }
-//
-//    private fun launchAddMode() {
-//        btnSave.setOnClickListener{
-//            viewModel.addShopItem(etName.text.toString(), etCount.text.toString())
-//        }
-//    }
-//
     companion object{
         private const val EXTRA_SCREEN_MODE = "extra_mode"
         private const val MODE_EDIT = "mode_edit"
@@ -103,69 +76,6 @@ class ShopItemActivity : AppCompatActivity() {
         }
     }
 
-//    private fun initViews(){
-//        tilName = findViewById(R.id.til_name)
-//        etName = findViewById(R.id.et_name)
-//        tilCount = findViewById(R.id.til_count)
-//        etCount = findViewById(R.id.et_count)
-//        btnSave = findViewById(R.id.btn_save)
-//    }
-//
-//    private fun addTextChangeListeners(){
-//        etName.addTextChangedListener(object :TextWatcher{
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                if (s != null) {
-//                    viewModel.resetInputErrorName()
-//                }
-//            }
-//
-//            override fun afterTextChanged(s: Editable?) {
-//
-//            }
-//        })
-//
-//        etCount.addTextChangedListener(object :TextWatcher{
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                if (s != null) {
-//                    viewModel.resetInputErrorCount()
-//                }
-//            }
-//
-//            override fun afterTextChanged(s: Editable?) {
-//
-//            }
-//
-//        })
-//    }
-//
-//    private fun observeViewModel(){
-//        viewModel.errorInputName.observeForever {
-//            if (it == true) {
-//                tilName.error = getString(R.string.name_error)
-//            } else {
-//                tilName.error = null
-//            }
-//        }
-//
-//        viewModel.errorInputCount.observeForever{
-//            if (it == true) {
-//                tilCount.error = getString(R.string.count_error)
-//            } else {
-//                tilCount.error = null
-//            }
-//        }
-//
-//        viewModel.shouldCloseScreen.observe(this){
-//            finish()
-//        }
-//    }
+
 
 }
