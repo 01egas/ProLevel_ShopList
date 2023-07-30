@@ -3,6 +3,7 @@ package com.example.prolevel_shoplist.presentation
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainer
@@ -14,7 +15,7 @@ import com.example.prolevel_shoplist.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var shopListAdapter: ShopListAdapter
@@ -138,6 +139,10 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
+    override fun onEditingFinished() {
+        onBackPressedDispatcher.onBackPressed()
+        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+    }
 
 }
 
