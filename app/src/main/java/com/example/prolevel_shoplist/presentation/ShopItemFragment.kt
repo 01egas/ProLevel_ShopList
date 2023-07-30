@@ -1,7 +1,6 @@
 package com.example.prolevel_shoplist.presentation
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.prolevel_shoplist.R
@@ -34,10 +31,13 @@ class ShopItemFragment(
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
 
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parseParams()
+        Log.d("ShopItemFragment", "onCreate")
     }
 
     override fun onCreateView(
@@ -45,16 +45,63 @@ class ShopItemFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("ShopItemFragment", "onCreateView")
         return inflater.inflate(R.layout.fragment_shop_item, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d("ShopItemFragment", "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         initViews(view)
         addTextChangeListeners()
         launchRightMode()
         observeViewModel()
+    }
+
+    override fun onAttach(context: Context) {
+        Log.d("ShopItemFragment", "onAttach")
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) {
+            onEditingFinishedListener = context
+        } else {
+            throw java.lang.RuntimeException("Activity must implement OnEditingFinishedListener")
+        }
+    }
+
+    override fun onResume() {
+        Log.d("ShopItemFragment", "onResume")
+        super.onResume()
+    }
+
+    override fun onStart() {
+        Log.d("ShopItemFragment", "onStart")
+        super.onStart()
+    }
+
+    override fun onPause() {
+        Log.d("ShopItemFragment", "onPause")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d("ShopItemFragment", "onStop")
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        Log.d("ShopItemFragment", "onDestroy")
+        super.onDestroy()
+    }
+
+    override fun onDestroyView() {
+        Log.d("ShopItemFragment", "onDestroyView")
+        super.onDestroyView()
+    }
+
+    override fun onDetach() {
+        Log.d("ShopItemFragment", "onDetach")
+        super.onDetach()
     }
 
 
@@ -186,8 +233,12 @@ class ShopItemFragment(
         }
 
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            onEditingFinishedListener.onEditingFinished()
         }
+    }
+
+    interface OnEditingFinishedListener{
+        fun onEditingFinished()
     }
 
 }
