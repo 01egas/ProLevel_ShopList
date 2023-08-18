@@ -13,6 +13,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.prolevel_shoplist.R
+import com.example.prolevel_shoplist.databinding.FragmentShopItemBinding
 import com.example.prolevel_shoplist.domain.ShopItem
 import com.google.android.material.textfield.TextInputLayout
 
@@ -21,12 +22,9 @@ class ShopItemFragment(
 ) : Fragment() {
 
     private lateinit var viewModel: ShopItemViewModel
-
-    private lateinit var tilName: TextInputLayout
-    private lateinit var etName: EditText
-    private lateinit var tilCount: TextInputLayout
-    private lateinit var etCount: EditText
-    private lateinit var btnSave: Button
+    private var _viewBinding: FragmentShopItemBinding? = null
+    private val viewBinding: FragmentShopItemBinding
+        get() = _viewBinding ?: throw RuntimeException("FragmentShopItemBinding == null")
 
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
@@ -46,14 +44,16 @@ class ShopItemFragment(
         savedInstanceState: Bundle?
     ): View? {
         Log.d("ShopItemFragment", "onCreateView")
-        return inflater.inflate(R.layout.fragment_shop_item, container, false)
+        _viewBinding = FragmentShopItemBinding.inflate(layoutInflater, container, false)
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d("ShopItemFragment", "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        initViews(view)
+        viewBinding.viewModel = viewModel
+        viewBinding.lifecycleOwner = viewLifecycleOwner
         addTextChangeListeners()
         launchRightMode()
         observeViewModel()
@@ -69,39 +69,9 @@ class ShopItemFragment(
         }
     }
 
-    override fun onResume() {
-        Log.d("ShopItemFragment", "onResume")
-        super.onResume()
-    }
-
-    override fun onStart() {
-        Log.d("ShopItemFragment", "onStart")
-        super.onStart()
-    }
-
-    override fun onPause() {
-        Log.d("ShopItemFragment", "onPause")
-        super.onPause()
-    }
-
-    override fun onStop() {
-        Log.d("ShopItemFragment", "onStop")
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        Log.d("ShopItemFragment", "onDestroy")
-        super.onDestroy()
-    }
-
     override fun onDestroyView() {
-        Log.d("ShopItemFragment", "onDestroyView")
         super.onDestroyView()
-    }
-
-    override fun onDetach() {
-        Log.d("ShopItemFragment", "onDetach")
-        super.onDetach()
+        _viewBinding = null
     }
 
 
@@ -114,18 +84,24 @@ class ShopItemFragment(
 
     private fun launchEditMode() {
         viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(viewLifecycleOwner) { shopItem ->
-            etName.setText(shopItem.name)
-            etCount.setText(shopItem.count.toString())
-        }
-        btnSave.setOnClickListener {
-            viewModel.editShopItem(etName.text.toString(), etCount.text.toString())
+//        viewModel.shopItem.observe(viewLifecycleOwner) { shopItem ->
+//            viewBinding.etName.setText(shopItem.name)
+//            viewBinding.etCount.setText(shopItem.count.toString())
+//        }
+        viewBinding.btnSave.setOnClickListener {
+            viewModel.editShopItem(
+                viewBinding.etName.text.toString(),
+                viewBinding.etCount.text.toString()
+            )
         }
     }
 
     private fun launchAddMode() {
-        btnSave.setOnClickListener {
-            viewModel.addShopItem(etName.text.toString(), etCount.text.toString())
+        viewBinding.btnSave.setOnClickListener {
+            viewModel.addShopItem(
+                viewBinding.etName.text.toString(),
+                viewBinding.etCount.text.toString()
+            )
         }
     }
 
@@ -173,16 +149,8 @@ class ShopItemFragment(
     }
 
 
-    private fun initViews(view: View) {
-        tilName = view.findViewById(R.id.til_name)
-        etName = view.findViewById(R.id.et_name)
-        tilCount = view.findViewById(R.id.til_count)
-        etCount = view.findViewById(R.id.et_count)
-        btnSave = view.findViewById(R.id.btn_save)
-    }
-
     private fun addTextChangeListeners() {
-        etName.addTextChangedListener(object : TextWatcher {
+        viewBinding.etName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -198,7 +166,7 @@ class ShopItemFragment(
             }
         })
 
-        etCount.addTextChangedListener(object : TextWatcher {
+        viewBinding.etCount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -216,28 +184,28 @@ class ShopItemFragment(
     }
 
     private fun observeViewModel() {
-        viewModel.errorInputName.observe(viewLifecycleOwner) {
-            if (it == true) {
-                tilName.error = getString(R.string.name_error)
-            } else {
-                tilName.error = null
-            }
-        }
-
-        viewModel.errorInputCount.observe(viewLifecycleOwner) {
-            if (it == true) {
-                tilCount.error = getString(R.string.count_error)
-            } else {
-                tilCount.error = null
-            }
-        }
+//        viewModel.errorInputName.observe(viewLifecycleOwner) {
+//            if (it == true) {
+//                viewBinding.tilName.error = getString(R.string.name_error)
+//            } else {
+//                viewBinding.tilName.error = null
+//            }
+//        }
+//
+//        viewModel.errorInputCount.observe(viewLifecycleOwner) {
+//            if (it == true) {
+//                viewBinding.tilCount.error = getString(R.string.count_error)
+//            } else {
+//                viewBinding.tilCount.error = null
+//            }
+//        }
 
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
             onEditingFinishedListener.onEditingFinished()
         }
     }
 
-    interface OnEditingFinishedListener{
+    interface OnEditingFinishedListener {
         fun onEditingFinished()
     }
 

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    <data>
+        <variable
+            name="shopItem"
+            type="com.example.prolevel_shoplist.domain.ShopItem" />
+    </data>
+
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,14 +30,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:text="@{shopItem.name}"/>
 
         <TextView
             android:id="@+id/tvCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:text="@{String.valueOf(shopItem.count)}"
+            />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
 </layout>
