@@ -3,6 +3,7 @@ package com.example.prolevel_shoplist.presentation
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prolevel_shoplist.R
+import com.example.prolevel_shoplist.databinding.ActivityMainBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -21,10 +23,12 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
     private lateinit var shopListAdapter: ShopListAdapter
     private var shopItemContainer: FragmentContainerView? = null
     private var orientationMode = 0
+    private lateinit var viewBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        viewBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
         shopItemContainer = findViewById(R.id.shop_item_container_main)
 
@@ -115,8 +119,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
     }
 
     private fun setupFloatingActionButton() {
-        val btnAdd = findViewById<FloatingActionButton>(R.id.floatingActionButtonAdd)
-        btnAdd.setOnClickListener {
+        viewBinding.floatingActionButtonAdd.setOnClickListener {
             if (isOnePaneMode()) {
                 val nIntent = ShopItemActivity.newIntentAddItem(this)
                 startActivity(nIntent)
