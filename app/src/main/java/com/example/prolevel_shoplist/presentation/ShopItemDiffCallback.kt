@@ -5,7 +5,7 @@ import com.example.prolevel_shoplist.domain.ShopItem
 
 class ShopItemDiffCallback: DiffUtil.ItemCallback<ShopItem>() {
     override fun areItemsTheSame(oldItem: ShopItem, newItem: ShopItem): Boolean {
-        return oldItem.shopItemId == newItem.shopItemId
+        return oldItem.itemId == newItem.itemId
     }
 
     override fun areContentsTheSame(oldItem: ShopItem, newItem: ShopItem): Boolean {

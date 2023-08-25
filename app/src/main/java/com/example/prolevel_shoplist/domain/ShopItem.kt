@@ -5,7 +5,7 @@ data class ShopItem(
     val name: String,
     val count: Int,
     var isEnabled: Boolean,
-    var shopItemId: Int = UNDEFINED_ID
+    var itemId: Int = UNDEFINED_ID
 
 ) {
 
