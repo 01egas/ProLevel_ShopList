@@ -8,7 +8,7 @@ import kotlin.random.Random
 
 object ShopListRepositoryImpl : ShopListRepository {
 
-    private val shopList = sortedSetOf<ShopItem>({o1, o2 -> o1.shopItemId.compareTo(o2.shopItemId)})
+    private val shopList = sortedSetOf<ShopItem>({o1, o2 -> o1.itemId.compareTo(o2.itemId)})
     private var autoIncrementId = 0
     private val liveDataShopList = MutableLiveData<List<ShopItem>>()
 
@@ -20,8 +20,8 @@ object ShopListRepositoryImpl : ShopListRepository {
     }
 
     override fun addShopItem(shopItem: ShopItem) {
-        if (shopItem.shopItemId == ShopItem.UNDEFINED_ID) {
-            shopItem.shopItemId = autoIncrementId++
+        if (shopItem.itemId == ShopItem.UNDEFINED_ID) {
+            shopItem.itemId = autoIncrementId++
         }
         shopList.add(shopItem)
         updateLiveData()
@@ -33,14 +33,14 @@ object ShopListRepositoryImpl : ShopListRepository {
     }
 
     override fun editShopItem(shopItem: ShopItem) {
-        val oldElement = getShopItemById(shopItem.shopItemId)
+        val oldElement = getShopItemById(shopItem.itemId)
         shopList.remove(oldElement)
         addShopItem(shopItem)
     }
 
     override fun getShopItemById(shopItemId: Int): ShopItem {
         return shopList.find {
-            it.shopItemId == shopItemId
+            it.itemId == shopItemId
         } ?: throw RuntimeException("Element with $shopItemId not found")
     }
 

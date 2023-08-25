@@ -3,18 +3,15 @@ package com.example.prolevel_shoplist.presentation
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentContainer
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prolevel_shoplist.R
 import com.example.prolevel_shoplist.databinding.ActivityMainBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
@@ -104,10 +101,10 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
     private fun setupClickListener() {
         shopListAdapter.onShopItemClickListener = { shopItem ->
             if (isOnePaneMode()) {
-                val nIntent = ShopItemActivity.newIntentEditItem(this, shopItem.shopItemId)
+                val nIntent = ShopItemActivity.newIntentEditItem(this, shopItem.itemId)
                 startActivity(nIntent)
             } else {
-                launchFragment(ShopItemFragment.newInstanceEditItem(shopItem.shopItemId))
+                launchFragment(ShopItemFragment.newInstanceEditItem(shopItem.itemId))
             }
         }
     }
